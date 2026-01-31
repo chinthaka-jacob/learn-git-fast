@@ -6,3 +6,5 @@ git version: git --version OR git -v OR git (locally)
 git status
 git config: git config --list
 git log
+git remote
+push: git remote origin (branch)
