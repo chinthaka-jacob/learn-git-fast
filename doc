@@ -8,3 +8,7 @@ git config: git config --list
 git log
 git remote
 push: git remote origin (branch)
+
+To completely remove Git from a repository (i.e. make the
+directory behave like a normal folder again), delete 
+Git’s metadata directory: rm -rf .git
