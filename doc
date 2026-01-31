@@ -1,14 +1,8 @@
 ---------------------------------------
---- Monday the 26th of January 2026 ---
+------------ git commands -------------
 ---------------------------------------
 
-This is not "learn git fast" fast tutorial
-but this is based on the "Coding Train" 
-YouTube series
-
-I am experimenting with creating a branch
-from the main.
-
-I am now experimenting with making edits
-in both the main and sub-2 branches and then
-merging those branches.
+git version: git --version OR git -v OR git (locally)
+git status
+git config: git config --list
+git log
