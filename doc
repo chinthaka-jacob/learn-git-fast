@@ -12,3 +12,23 @@ push: git remote origin (branch)
 To completely remove Git from a repository (i.e. make the
 directory behave like a normal folder again), delete 
 Git’s metadata directory: rm -rf .git
+
+---------------------------------------
+Adding a local repo into GitHub
+---------------------------------------
+  370  rm -rf .git
+  376  git init
+  377  git status
+  378  git add .
+  379  git commit -a -m "Adding all the files including th echanged ones"
+  386  git remote add origin https://github.com/chinthaka-jacob/Edited_fx4f.git
+  387  git remote -v
+  388  git push origin main
+  389  git pull
+  405  git pull origin main
+  406  git config pull.rebase false
+  407  git pull origin main
+  408  git config pull.rebase true
+  409  git pull origin main
+  410  git push origin main
+  411  fc -l 370
