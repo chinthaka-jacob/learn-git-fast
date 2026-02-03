@@ -1,0 +1,142 @@
+✅ Correct Contribution Workflow
+(When a change touches BOTH a main repo and its submodule)
+
+This workflow applies to projects like fx4f_demo → fx4f, and is the only safe way to contribute when both layers change.
+
+🎯 Scenario
+
+You want to modify:
+
+main_repo/src/solver.py
+
+sub_repo/mesh_utils.py
+
+Since submodules are independent Git repositories, they must be treated as such.
+
+1️⃣ Fork BOTH repositories (GitLab UI)
+
+Fork separately:
+
+upstream/main_repo → your_user/main_repo
+upstream/sub_repo  → your_user/sub_repo
+
+
+📌 Forking is a server-side GitLab operation, not a CLI action.
+
+2️⃣ Clone the MAIN repo (with submodules)
+git clone --recurse-submodules git@gitlab.com:your_user/main_repo.git
+cd main_repo
+
+
+At this point:
+
+main_repo → your fork ✔
+
+sub_repo → still points to upstream ❌
+
+3️⃣ Repoint the submodule to YOUR fork
+
+Inside the submodule:
+
+cd sub_repo
+git remote set-url origin git@gitlab.com:your_user/sub_repo.git
+cd ..
+git submodule sync
+
+
+📌 Now:
+
+You can push to the submodule
+
+The main repo still tracks the submodule by commit hash
+
+4️⃣ Make changes in the SUBMODULE first
+cd sub_repo
+git checkout -b feature/john2004
+# edit files
+git commit -am "Add John (2004) reference solution"
+git push -u origin feature/john2004
+
+
+Then open a Merge Request:
+
+your_user/sub_repo:feature/john2004
+→
+upstream/sub_repo:main
+
+
+📌 This MR contains actual library code changes.
+
+5️⃣ Update the submodule pointer in MAIN repo
+
+After the submodule branch exists:
+
+cd ..
+git checkout -b feature/update-fx4f-submodule
+git add sub_repo
+git commit -m "Update submodule to include John (2004) reference solution"
+git push -u origin feature/update-fx4f-submodule
+
+
+📌 This commit:
+
+Does not contain submodule code
+
+Only updates the submodule commit hash
+
+6️⃣ Open Merge Request to MAIN repo
+
+Create MR:
+
+your_user/main_repo:feature/update-fx4f-submodule
+→
+upstream/main_repo:main
+
+
+This MR includes:
+
+Your main-repo changes (if any)
+
+The updated submodule pointer
+
+In the description:
+
+Link the submodule MR
+
+State which submodule commit is referenced
+
+🧩 Maintainer Review Logic
+
+Maintainers will see:
+
+Submodule sub_repo updated:
+abc123 → def456
+
+
+They check:
+
+✔ Is def456 merged (or mergeable) in upstream/sub_repo?
+
+✔ Does CI pass?
+
+Then they:
+
+Merge sub_repo MR
+
+Merge main_repo MR
+
+🔑 Critical Rules (Learn These Once)
+
+Never commit submodule code on main repo
+
+Never push directly to main
+
+Submodule MR comes first
+
+Main repo MR only updates the pointer
+
+Always use feature branches
+
+Use SSH, not HTTPS, for GitLab pushes
+
+Delete feature branches after merge
