@@ -28,6 +28,128 @@ Adding a local repo into GitHub
   405  git pull origin main
   406  git config pull.rebase false
   407  git pull origin main
+
+✅ Correct Workflow When Contributor Changes BOTH
+Let’s say they want to modify:
+main_repo/src/solver.py
+sub_repo/mesh_utils.py
+Here’s the proper flow.
+________________________________________
+🔁 Step 1 — Fork BOTH repositories
+They must fork:
+your_user/main_repo  →  their_user/main_repo
+your_user/sub_repo   →  their_user/sub_repo
+
+Now they own both.
+________________________________________
+🔧 Step 2 — Repoint the submodule to their fork
+Inside their fork of main_repo:
+cd sub_repo
+git remote set-url origin git@gitlab.com:their_user/sub_repo.git
+
+Or edit .gitmodules:
+[submodule "sub_repo"]
+    path = sub_repo
+    url = git@gitlab.com:their_user/sub_repo.git
+
+Then:
+git submodule sync
+
+Now their clone uses their fork of the submodule.
+________________________________________
+✏️ Step 3 — Make changes in the submodule
+cd sub_repo
+git checkout -b feature-x
+# edit files
+git commit -am "Improve mesh handling"
+git push origin feature-x
+
+Then:
+👉 Open a Merge Request to your sub_repo
+their_user/sub_repo:feature-x  →  your_user/sub_repo:main
+
+________________________________________
+🔗 Step 4 — Update the submodule pointer in main_repo
+Now they go back to the main project:
+cd ..
+cd sub_repo
+git checkout feature-x
+cd ..
+git add sub_repo
+git commit -m "Update submodule to include mesh fix"
+git push origin feature-main
+
+What happened?
+main_repo now points to the new commit in sub_repo.
+________________________________________
+📬 Step 5 — Open Merge Request to main_repo
+Now they open:
+their_user/main_repo:feature-main  →  your_user/main_repo:main
+
+This MR includes:
+Their changes in main_repo
+The updated submodule commit pointer
+________________________________________
+🧩 How You Review This as Maintainer
+You will see in the MR:
+Submodule sub_repo updated:
+abc123 → def456
+
+You check:
+✔ Does def456 exist in your_user/sub_repo?
+
+✔ Was the MR to sub_repo merged?
+If YES → merge main MR.
+
+
+
+git clone --recurse-submodules https://gitlab.com/chinthakajacob/fx4f_demo.git
+cd fx4f_demo
+git status
+git remote -v
+cd fx4f
+git status
+git remote -v
+git remote set-url origin https://gitlab.com/chinthakajacob/fx4f.git
+git remote -v
+git submodule sync
+git checkout -b Reference_solution-John2004
+git status
+git add .
+git commit -am "Added John 2004 reference solution and getter function"
+git push origin Reference_solution-John2004
+
+git config --show-origin --get credential.helper\n
+ls -la ~/.ssh | grep -E "id_ed25519|id_rsa"\n
+cat ~/.ssh/id_ed25519.pub\n
+
+ssh-keygen -t ed25519 -C "chinthakajacob@gmail.com"\n
+cat ~/.ssh/id_ed25519.pub\n
+ssh -T git@gitlab.com\n
+
+git remote set-url origin git@gitlab.com:chinthakajacob/fx4f.git\n
+git push -u origin Reference_solution-John2004\n
+
+cd ..
+cd fx4f
+git checkout Reference_solution-John2004
+
+git add .
+git commit -m "Update submodule to include John2004 reference solution"
+git push origin main
+git remote -v
+git remote set-url origin git@gitlab.com:chinthakajacob/fx4f_demo.git\n
+git remote -v\n
+ssh -T git@gitlab.com\n
+git push -u origin main
+git remote -v
+
+git push -u origin feature-main 
+error: src refspec feature-main does not match any
+error: failed to push some refs to 'gitlab.com:chinthakajacob/fx4f_demo.git'
+
+git checkout -b feature/update-fx4f-submodule\n
+git push -u origin feature/update-fx4f-submodule\n
   408  git config pull.rebase true
   409  git pull origin main
   410  git push origin main
